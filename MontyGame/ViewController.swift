@@ -16,19 +16,19 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var label: UILabel! = nil
+    var label = UILabel()
     let titles = ["A", "B", "C", "D", "E"]
     let resetGameName = "Reset Game"
 
     // change amount of cards to titles array count
-    var gameEngine: MontyEngine! = nil
+    var gameEngine: MontyEngine?
     //    let gameEngine = MontyEngine(amountOfCards: 3)
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
         gameEngine = MontyEngine(amountOfCards: titles.count)
-        gameEngine!.setupCards()
+        gameEngine?.setupCards()
         setupLabel()
         setupResetButton()
         for (index, title) in titles.enumerate() {
@@ -37,12 +37,6 @@ class ViewController: UIViewController {
     }
 
     func setupResetButton() {
-        // setting the frame
-//        let frame = CGRect(x: 100, y: 150, width: 120, height: 60)
-        // construct the button
-//        let resetButton = UIButton(frame: frame)
-
-
         // we want to use constrain for reset button
         let resetButton = UIButton(type: .System)
         resetButton.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +72,8 @@ class ViewController: UIViewController {
     }
 
     func handleButtonTapped(button: UIButton) {
-        if gameEngine.checkCard(button.tag) {
+        guard let didWin = gameEngine?.checkCard(button.tag) else { return }
+        if didWin {
             label.text = "WINNER"
             button.backgroundColor = UIColor.greenColor()
             // i want to disable buttons if we won the game
@@ -102,7 +97,7 @@ class ViewController: UIViewController {
 
     func resetAllButtonColor() {
         // reset cards in the game engine
-        gameEngine.setupCards()
+        gameEngine?.setupCards()
         // reset buttons to lightGrayColor
         for v in view.subviews {
             // only grab the view if it's a button
@@ -111,18 +106,13 @@ class ViewController: UIViewController {
                 if button.currentTitle != resetGameName {
                     button.backgroundColor = UIColor.lightGrayColor()
                     button.enabled = true
+                    label.text = "Let's Play"
                 }
             }
         }
     }
 
     func setupLabel() {
-//        let rect = CGRect(x: 175, y: 20, width: 150, height: 50)
-//        label = UILabel(frame: rect)
-
-        // constructed a label
-        label = UILabel()
-
         // setting the title
         label.text = "Let's Play"
         view.addSubview(label)
